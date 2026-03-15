@@ -229,10 +229,11 @@
             background: rgba(0, 0, 0, 0.4);
             padding: 20px;
             border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
             width: 100%;
             margin-bottom: 20px;
             text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
         .status-indicator {
@@ -410,15 +411,29 @@
                     <canvas id="next-canvas" width="80" height="240" class="mini-canvas"></canvas>
                 </div>
 
-                <div class="panel-box score-box" style="border-color: #f953c6; box-shadow: 0 0 10px rgba(249, 83, 198, 0.3);">
+                <div class="panel-box score-box" id="power-box" style="border-color: #f953c6; box-shadow: 0 0 10px rgba(249, 83, 198, 0.3); transition: all 0.3s;">
                     <h3 style="color: #f953c6;">Power</h3>
                     <span id="watt-display" style="color: #f953c6;">0 W</span>
+                    <div id="power-warning" style="display: none; color: #ff00cc; font-weight: bold; font-size: 0.8rem; margin-top: 5px; animation: blink 1s infinite;">⚠️ PEDAL FASTER! ⚠️</div>
                 </div>
 
                 <div class="panel-box score-box">
                     <h3>Score</h3>
                     <span id="score">0</span>
                 </div>
+                
+                <style>
+                    @keyframes blink {
+                        0% { opacity: 1; }
+                        50% { opacity: 0; }
+                        100% { opacity: 1; }
+                    }
+                    .power-warning-active {
+                        border-color: #ff00cc !important;
+                        box-shadow: 0 0 20px rgba(255, 0, 204, 0.8) !important;
+                        background: rgba(255, 0, 204, 0.1) !important;
+                    }
+                </style>
                 
                 <div class="panel-box controls-info">
                     <strong>Controls:</strong><br><br>
@@ -468,6 +483,7 @@
         let gameState = 'START'; // START, PLAYING, GAMEOVER, LEADERBOARD
         let currentWatts = 0; // Håller koll på dina nuvarande watt
         let menuSelectedIndex = 0;
+        let floatingTexts = [];
 
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -526,6 +542,7 @@
             dropCounter = 0;
             lastTime = performance.now();
             particles = []; // Clear any remaining particles
+            floatingTexts = []; // Clear any remaining floating texts
             update();
         }
 
@@ -974,14 +991,31 @@
             matrix.forEach((row, y) => {
                 row.forEach((value, x) => {
                     if (value !== 0) {
+                        // Base color
                         ctx.fillStyle = colors[value];
                         ctx.fillRect(x + offsetX, y + offsetY, 1, 1);
-                        ctx.lineWidth = 0.05;
-                        ctx.strokeStyle = 'rgba(0,0,0,0.5)';
-                        ctx.strokeRect(x + offsetX, y + offsetY, 1, 1);
+                        
+                        // Glossy top edge
+                        ctx.fillStyle = 'rgba(255,255,255,0.4)';
+                        ctx.fillRect(x + offsetX, y + offsetY, 1, 0.15);
+                        
+                        // Glossy left edge
                         ctx.fillStyle = 'rgba(255,255,255,0.2)';
-                        ctx.fillRect(x + offsetX, y + offsetY, 1, 0.2);
-                        ctx.fillRect(x + offsetX, y + offsetY, 0.2, 1);
+                        ctx.fillRect(x + offsetX, y + offsetY, 0.15, 1);
+                        
+                        // Dark bottom edge
+                        ctx.fillStyle = 'rgba(0,0,0,0.4)';
+                        ctx.fillRect(x + offsetX, y + offsetY + 0.85, 1, 0.15);
+                        
+                        // Dark right edge
+                        ctx.fillStyle = 'rgba(0,0,0,0.2)';
+                        ctx.fillRect(x + offsetX + 0.85, y + offsetY, 0.15, 1);
+
+                        // Inner glow/gradient simulated by a slightly smaller rect
+                        ctx.fillStyle = colors[value];
+                        ctx.globalAlpha = 0.5;
+                        ctx.fillRect(x + offsetX + 0.1, y + offsetY + 0.1, 0.8, 0.8);
+                        ctx.globalAlpha = 1.0;
                     }
                 });
             });
@@ -1013,16 +1047,31 @@
             matrix.forEach((row, y) => {
                 row.forEach((value, x) => {
                     if (value !== 0) {
+                        // Base color
                         context.fillStyle = colors[value];
                         context.fillRect(x + offset.x, y + offset.y, 1, 1);
-                        context.lineWidth = 0.05;
-                        context.strokeStyle = 'rgba(0,0,0,0.5)';
-                        context.strokeRect(x + offset.x, y + offset.y, 1, 1);
                         
-                        // Small highlight for pseudo 3D effect
+                        // Glossy top edge
+                        context.fillStyle = 'rgba(255,255,255,0.4)';
+                        context.fillRect(x + offset.x, y + offset.y, 1, 0.15);
+                        
+                        // Glossy left edge
                         context.fillStyle = 'rgba(255,255,255,0.2)';
-                        context.fillRect(x + offset.x, y + offset.y, 1, 0.2);
-                        context.fillRect(x + offset.x, y + offset.y, 0.2, 1);
+                        context.fillRect(x + offset.x, y + offset.y, 0.15, 1);
+                        
+                        // Dark bottom edge
+                        context.fillStyle = 'rgba(0,0,0,0.4)';
+                        context.fillRect(x + offset.x, y + offset.y + 0.85, 1, 0.15);
+                        
+                        // Dark right edge
+                        context.fillStyle = 'rgba(0,0,0,0.2)';
+                        context.fillRect(x + offset.x + 0.85, y + offset.y, 0.15, 1);
+
+                        // Inner glow/gradient simulated by a slightly smaller rect
+                        context.fillStyle = colors[value];
+                        context.globalAlpha = 0.5;
+                        context.fillRect(x + offset.x + 0.1, y + offset.y + 0.1, 0.8, 0.8);
+                        context.globalAlpha = 1.0;
                     }
                 });
             });
@@ -1032,11 +1081,57 @@
             context.fillStyle = '#0d1117';
             context.fillRect(0, 0, canvas.width, canvas.height);
 
+            // Draw Background Grid
+            context.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+            context.lineWidth = 0.05;
+            for(let x = 0; x <= 12; x++) {
+                context.beginPath();
+                context.moveTo(x, 0);
+                context.lineTo(x, 20);
+                context.stroke();
+            }
+            for(let y = 0; y <= 20; y++) {
+                context.beginPath();
+                context.moveTo(0, y);
+                context.lineTo(12, y);
+                context.stroke();
+            }
+
             drawMatrix(board, {x: 0, y: 0});
             if (player.matrix) {
                 drawMatrix(player.matrix, player.pos);
             }
             drawParticles();
+            
+            // Draw Floating Texts
+            for (let i = floatingTexts.length - 1; i >= 0; i--) {
+                let text = floatingTexts[i];
+                context.save();
+                context.font = "bold 1.5px 'Segoe UI', sans-serif";
+                context.textAlign = "center";
+                
+                // Outline
+                context.lineWidth = 0.1;
+                context.strokeStyle = `rgba(0, 0, 0, ${text.life})`;
+                context.strokeText(text.message, text.x, text.y);
+                
+                // Text body with gradient style color based on lines
+                context.fillStyle = text.color.replace(')', `, ${text.life})`).replace('rgb', 'rgba');
+                // Use a shadow for extra glow
+                context.shadowColor = text.color;
+                context.shadowBlur = 10 * text.life;
+                context.fillText(text.message, text.x, text.y);
+                
+                context.restore();
+
+                // Update text physics
+                text.y -= 0.05; // Float upwards
+                text.life -= 0.015; // Fade out
+
+                if (text.life <= 0) {
+                    floatingTexts.splice(i, 1);
+                }
+            }
         }
 
         function holdPiece() {
@@ -1086,6 +1181,9 @@
 
         function arenaSweep() {
             let rowCount = 1;
+            let linesCleared = 0;
+            let sweepY = 0;
+
             outer: for (let y = board.length - 1; y >= 0; --y) {
                 for (let x = 0; x < board[y].length; ++x) {
                     if (board[y][x] === 0) {
@@ -1096,6 +1194,7 @@
                 // If we get here, the row is full. Trigger particle explosion!
                 // We pick the color of the first block in the row as base, or random
                 spawnParticles(y, board[y][0]);
+                sweepY = y; // Log the last cleared row for text spawn
 
                 const row = board.splice(y, 1)[0].fill(0);
                 board.unshift(row);
@@ -1103,6 +1202,34 @@
 
                 player.score += rowCount * 10;
                 rowCount *= 2;
+                linesCleared++;
+            }
+
+            if (linesCleared > 0) {
+                let message = "";
+                let color = "rgb(255, 255, 255)"; // default white
+                
+                if (linesCleared === 1) {
+                    message = "SINGLE";
+                    color = "rgb(0, 210, 255)"; // cyan
+                } else if (linesCleared === 2) {
+                    message = "DOUBLE";
+                    color = "rgb(249, 83, 198)"; // pink
+                } else if (linesCleared === 3) {
+                    message = "TRIPLE";
+                    color = "rgb(255, 142, 13)"; // orange
+                } else if (linesCleared >= 4) {
+                    message = "TETRIS!";
+                    color = "rgb(255, 13, 114)"; // red/magenta
+                }
+
+                floatingTexts.push({
+                    message: message,
+                    x: 6, // center of grid (12 width / 2)
+                    y: sweepY, // spawn near where lines were cleared
+                    life: 1.0,
+                    color: color
+                });
             }
         }
 
@@ -1204,12 +1331,27 @@
             lastTime = time;
 
             // --- DYNAMISK HASTIGHET BASERAT PÅ WATT ---
-            // Om du trampar 0 Watt = 400ms (Snabbt och svårt!)
-            // Varje extra watt lägger till 4ms. 
-            // Trampar du 150W -> 400 + (150*4) = 1000ms (Normal/Skön hastighet)
-            // Trampar du 300W -> 400 + (300*4) = 1600ms (Långsamt och mycket enkelt)
-            // Max hastighet/tak sätts till 2500ms så att det inte stannar helt.
-            let dynamicDropInterval = Math.min(2500, Math.max(150, 400 + (currentWatts * 4)));
+            // < 100 Watt: Blir straffad med MYCKET snabba block (50ms - 250ms beroende på hur lågt).
+            // >= 100 Watt: Normal hastighet, skalas upp för att bli enklare ju hårdare man trampar
+            let dynamicDropInterval;
+            const powerBox = document.getElementById('power-box');
+            const powerWarning = document.getElementById('power-warning');
+
+            if (currentWatts < 100) {
+                // Straffområde - Drop speed från 50ms (0W) upp till 250ms (99W)
+                dynamicDropInterval = 50 + (currentWatts * 2);
+                
+                // Visa varning
+                powerBox.classList.add('power-warning-active');
+                powerWarning.style.display = 'block';
+            } else {
+                // Normalområde - Skalar från >=400ms till >=2500ms
+                dynamicDropInterval = Math.min(2500, 400 + ((currentWatts - 100) * 4));
+                
+                // Dölj varning
+                powerBox.classList.remove('power-warning-active');
+                powerWarning.style.display = 'none';
+            }
 
             dropCounter += deltaTime;
             if (dropCounter > dynamicDropInterval) {
