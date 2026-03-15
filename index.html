@@ -101,14 +101,15 @@
             flex-direction: column;
             align-items: center;
             margin-bottom: auto;
-            background: rgba(20, 25, 35, 0.85);
-            backdrop-filter: blur(10px);
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.1);
-            max-width: 600px;
-            width: 90%;
+            background: rgba(10, 15, 25, 0.7);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            padding: 50px;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.2);
+            max-width: 1200px;
+            width: 95%;
             position: relative;
             z-index: 10;
         }
@@ -164,14 +165,15 @@
             display: flex;
             flex-direction: column;
             gap: 30px;
-            width: 200px;
+            width: 320px;
         }
 
         canvas {
-            background-color: #0d1117;
-            border: 3px solid #3a7bd5;
-            border-radius: 8px;
-            box-shadow: 0 0 20px rgba(58, 123, 213, 0.5);
+            background-color: rgba(13, 17, 23, 0.8);
+            backdrop-filter: blur(10px);
+            border: 3px solid rgba(58, 123, 213, 0.8);
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(58, 123, 213, 0.6), inset 0 0 20px rgba(0,0,0,0.8);
         }
 
         .mini-canvas {
@@ -192,10 +194,13 @@
         }
 
         .panel-box {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4), inset 0 0 10px rgba(255,255,255,0.05);
         }
 
         .score-box h3 {
@@ -393,7 +398,7 @@
     </div>
 
     <!-- GAME SCREEN -->
-    <div id="game-screen" class="screen" style="padding: 20px; background: rgba(20, 25, 35, 0.6);">
+    <div id="game-screen" class="screen" style="padding: 30px; background: rgba(10, 15, 25, 0.5);">
         <div class="game-layout">
             
             <div class="side-panel">
@@ -401,6 +406,24 @@
                     <h3>Hold</h3>
                     <canvas id="hold-canvas" width="160" height="160" class="mini-canvas"></canvas>
                 </div>
+
+                <div class="panel-box controls-info">
+                    <strong>Controls:</strong><br><br>
+                    <em>Keyboard:</em><br>
+                    Arrows: Move/Rotate<br>
+                    Down: Drop Faster<br>
+                    Shift/C: Hold Piece<br><br>
+                    <em>Zwift Click/Play:</em><br>
+                    Arrows: Move/Rotate/Drop<br>
+                    <strong>A: Hard Drop</strong><br>
+                    <strong>B: Hold Piece</strong>
+                </div>
+
+                <div id="ble-controls-game-status" class="gamepad-status" style="margin-bottom: 8px;">
+                    No BLE Controls
+                </div>
+
+                <button class="btn secondary" style="font-size: 1.2rem; padding: 15px;" onclick="quitGame()">Quit</button>
             </div>
 
             <canvas id="tetris" width="480" height="800"></canvas>
@@ -434,24 +457,6 @@
                         background: rgba(255, 0, 204, 0.1) !important;
                     }
                 </style>
-                
-                <div class="panel-box controls-info">
-                    <strong>Controls:</strong><br><br>
-                    <em>Keyboard:</em><br>
-                    Arrows: Move/Rotate<br>
-                    Down: Drop Faster<br>
-                    Shift/C: Hold Piece<br><br>
-                    <em>Zwift Click/Play:</em><br>
-                    Arrows: Move/Rotate/Drop<br>
-                    <strong>A: Hard Drop</strong><br>
-                    <strong>B: Hold Piece</strong>
-                </div>
-
-                <div id="ble-controls-game-status" class="gamepad-status" style="margin-bottom: 8px;">
-                    No BLE Controls
-                </div>
-                
-                <button class="btn secondary" style="font-size: 0.9rem; padding: 10px;" onclick="quitGame()">Quit</button>
             </div>
         </div>
     </div>
