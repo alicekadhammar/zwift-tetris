@@ -226,36 +226,6 @@
             box-shadow: 0 0 15px rgba(72, 187, 120, 0.5);
         }
 
-        input[type="text"] {
-            padding: 12px 20px;
-            font-size: 1.2rem;
-            border-radius: 25px;
-            border: 2px solid #00d2ff;
-            background: rgba(0,0,0,0.5);
-            color: white;
-            margin-bottom: 20px;
-            text-align: center;
-            width: 80%;
-            outline: none;
-        }
-
-        ol.leaderboard-list {
-            list-style: none;
-            padding: 0;
-            width: 100%;
-            margin-bottom: 30px;
-        }
-
-        ol.leaderboard-list li {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 20px;
-            margin-bottom: 8px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 8px;
-            font-size: 1.1rem;
-        }
-
         @media (max-width: 768px) {
             .game-layout { flex-direction: column; align-items: center; }
         }
@@ -291,7 +261,6 @@
 
     <h1>Zwift-Tetris</h1>
     
-    <!-- START SCREEN -->
     <div id="start-screen" class="screen active">
         <div class="status-box">
             <h3 style="margin: 0 0 15px 0; color: #00d2ff;">Connect Equipment</h3>
@@ -302,12 +271,12 @@
             <div id="ble-status" class="status-indicator">No power meter connected</div>
             
             <button class="btn secondary" style="font-size: 1rem; padding: 10px 20px; margin-top: 15px; background: linear-gradient(90deg, #f6ad55 0%, #dd6b20 100%);" onclick="connectZwiftPlayBLE()" id="btn-zwiftplay">
-                Connect Zwift Play (Bluetooth)
+                Search Zwift Play (Aggressive)
             </button>
             
             <div style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
-                <span style="font-size: 0.8rem; color: #a0aec0;">Gamepad (Standard/Enjoyable):<br>Press any button to connect.</span>
-                <div id="menu-gamepad-status" class="status-indicator">No gamepad found</div>
+                <span style="font-size: 0.8rem; color: #a0aec0;">Status:</span>
+                <div id="menu-gamepad-status" class="status-indicator">No gamepad connected</div>
             </div>
         </div>
 
@@ -315,7 +284,6 @@
         <button class="btn secondary" onclick="showLeaderboard()">Leaderboard</button>
     </div>
 
-    <!-- GAME SCREEN -->
     <div id="game-screen" class="screen" style="padding: 20px; background: rgba(20, 25, 35, 0.6);">
         <div class="game-layout">
             <div class="side-panel">
@@ -324,40 +292,33 @@
                     <canvas id="hold-canvas" width="80" height="80" class="mini-canvas"></canvas>
                 </div>
             </div>
-
             <canvas id="tetris" width="240" height="400"></canvas>
-            
             <div class="info-panel">
                 <div class="panel-box score-box">
                     <h3>Next</h3>
                     <canvas id="next-canvas" width="80" height="240" class="mini-canvas"></canvas>
                 </div>
-
-                <div class="panel-box score-box" style="border-color: #f953c6; box-shadow: 0 0 10px rgba(249, 83, 198, 0.3);">
+                <div class="panel-box score-box" style="border-color: #f953c6;">
                     <h3 style="color: #f953c6;">Power</h3>
                     <span id="watt-display" style="color: #f953c6;">0 W</span>
                 </div>
-
                 <div class="panel-box score-box">
                     <h3>Score</h3>
                     <span id="score">0</span>
                 </div>
-                
                 <button class="btn secondary" style="font-size: 0.9rem; padding: 10px; width: 100%;" onclick="quitGame()">Quit</button>
             </div>
         </div>
     </div>
 
-    <!-- GAME OVER SCREEN -->
     <div id="game-over-screen" class="screen">
         <h2 style="font-size: 2.5rem; color: #ff00cc; margin: 0;">Game Over!</h2>
         <p>Final Score: <strong id="final-score" style="color: #00d2ff; font-size: 2rem;">0</strong></p>
-        <input type="text" id="player-name" placeholder="Enter your name" maxlength="12">
+        <input type="text" id="player-name" placeholder="Enter name" maxlength="12">
         <button class="btn" onclick="saveScore()">Save Score</button>
         <button class="btn secondary" onclick="showStartScreen()">Main Menu</button>
     </div>
 
-    <!-- LEADERBOARD SCREEN -->
     <div id="leaderboard-screen" class="screen">
         <h2 style="color: #00d2ff; margin-top: 0;">Top Riders</h2>
         <ol id="leaderboard-list" class="leaderboard-list"></ol>
@@ -390,24 +351,42 @@
                 document.getElementById('ble-status').innerText = "Connected: " + device.name;
                 document.getElementById('ble-status').classList.add('connected');
                 document.getElementById('btn-power').style.display = "none";
-            } catch (err) { alert("BT Error: " + err.message); }
+            } catch (err) { alert("Power Meter Error: " + err.message); }
         }
 
+        // --- UPPDATERAD ZWIFT PLAY LOGIK (Aggressiv sökning) ---
         async function connectZwiftPlayBLE() {
             try {
-                document.getElementById('btn-zwiftplay').innerText = "Searching...";
+                document.getElementById('btn-zwiftplay').innerText = "SEARCHING EVERYTHING...";
+                
+                // Vi använder acceptAllDevices för att tvinga fram allt, 
+                // då Mac ibland gömmer enheter med specifika namn-prefix.
                 const device = await navigator.bluetooth.requestDevice({
-                    filters: [{ namePrefix: 'Zwift Play' }],
-                    optionalServices: ['generic_access', 'battery_service'] 
+                    acceptAllDevices: true,
+                    optionalServices: [
+                        '00001801-0000-1000-8000-00805f9b34fb', // Generic Attribute
+                        '0000180f-0000-1000-8000-00805f9b34fb', // Battery
+                        '00001812-0000-1000-8000-00805f9b34fb', // HID (Viktig för spelsignaler)
+                    ]
                 });
-                await device.gatt.connect();
-                document.getElementById('menu-gamepad-status').textContent = "Zwift Play Paired!";
+
+                document.getElementById('btn-zwiftplay').innerText = "CONNECTING...";
+                const server = await device.gatt.connect();
+                
+                document.getElementById('menu-gamepad-status').textContent = "Device Paired: " + device.name;
                 document.getElementById('menu-gamepad-status').classList.add('connected');
                 document.getElementById('btn-zwiftplay').style.display = "none";
-                alert("Paired with " + device.name + " via Web Bluetooth!\n\nNow use Enjoyable/AntiMicroX to map inputs.");
-            } catch (err) { alert("BT Error: " + err.message); document.getElementById('btn-zwiftplay').innerText = "Connect Zwift Play (Bluetooth)"; }
+                
+                alert("Paired with " + device.name + "!\n\nIMPORTANT: If buttons don't work, turn off Bluetooth on your phone and RESTART the controller to break any Companion App links.");
+
+            } catch (err) { 
+                console.error(err);
+                alert("Search stopped: " + err.message); 
+                document.getElementById('btn-zwiftplay').innerText = "Search Zwift Play (Aggressive)"; 
+            }
         }
 
+        // --- TETRIS-LOGIK ---
         const canvas = document.getElementById('tetris');
         const context = canvas.getContext('2d');
         const holdCanvas = document.getElementById('hold-canvas');
@@ -468,10 +447,7 @@
             let rowCount = 1;
             outer: for (let y = board.length - 1; y >= 0; --y) {
                 for (let x = 0; x < board[y].length; ++x) if (board[y][x] === 0) continue outer;
-                
-                // Explodera partiklar
-                for(let i=0; i<30; i++) particles.push({x:Math.random()*12, y:y, vx:(Math.random()-0.5)*0.5, vy:(Math.random()-0.5)*0.5, life:1, color:`hsl(${Math.random()*360},100%,50%)`});
-
+                for(let i=0; i<40; i++) particles.push({x: Math.random()*12, y: y, vx: (Math.random()-0.5)*0.8, vy: (Math.random()-0.5)*0.8, life: 1, color: `hsl(${Math.random()*360}, 100%, 60%)`});
                 board.splice(y, 1);
                 board.unshift(new Array(12).fill(0));
                 ++y;
@@ -483,12 +459,7 @@
 
         function playerDrop() {
             player.pos.y++;
-            if (collide()) {
-                player.pos.y--;
-                merge();
-                playerReset();
-                arenaSweep();
-            }
+            if (collide()) { player.pos.y--; merge(); playerReset(); arenaSweep(); }
             dropCounter = 0;
         }
 
@@ -530,13 +501,14 @@
 
         function draw() {
             context.fillStyle = '#0d1117'; context.fillRect(0,0,240,400);
-            board.forEach((row, y) => row.forEach((v, x) => { if (v) { context.fillStyle = colors[v]; context.fillRect(x,y,1,1); } }));
-            player.matrix.forEach((row, y) => row.forEach((v, x) => { if (v) { context.fillStyle = colors[v]; context.fillRect(x+player.pos.x, y+player.pos.y, 1, 1); } }));
-            
+            board.forEach((row, y) => row.forEach((v, x) => { if (v) { context.fillStyle = colors[v]; context.fillRect(x,y,1,1); context.strokeRect(x,y,1,1); } }));
+            if(player.matrix) {
+                player.matrix.forEach((row, y) => row.forEach((v, x) => { if (v) { context.fillStyle = colors[v]; context.fillRect(x+player.pos.x, y+player.pos.y, 1, 1); context.strokeRect(x+player.pos.x, y+player.pos.y, 1, 1); } }));
+            }
             particles.forEach((p, i) => {
                 p.x += p.vx; p.y += p.vy; p.life -= 0.02;
                 if (p.life <= 0) particles.splice(i, 1);
-                else { context.globalAlpha = p.life; context.fillStyle = p.color; context.fillRect(p.x, p.y, 0.15, 0.15); }
+                else { context.globalAlpha = p.life; context.fillStyle = p.color; context.fillRect(p.x, p.y, 0.2, 0.2); }
             });
             context.globalAlpha = 1;
         }
@@ -553,7 +525,6 @@
 
         function startGame() { gameState = 'PLAYING'; board.forEach(r => r.fill(0)); player.score = 0; playerReset(); showScreen('game-screen'); update(); }
         function gameOver() { gameState = 'GAMEOVER'; document.getElementById('final-score').innerText = player.score; showScreen('game-over-screen'); }
-
         function saveScore() {
             let n = document.getElementById('player-name').value || "Rider";
             let s = JSON.parse(localStorage.getItem('zScores')) || [];
@@ -561,7 +532,6 @@
             localStorage.setItem('zScores', JSON.stringify(s.sort((a,b)=>b.s-a.s).slice(0,10)));
             showLeaderboard();
         }
-
         function showLeaderboard() {
             let s = JSON.parse(localStorage.getItem('zScores')) || [];
             document.getElementById('leaderboard-list').innerHTML = s.map(x => `<li><span>${x.n}</span><span>${x.s}</span></li>`).join('');
@@ -570,20 +540,12 @@
 
         document.addEventListener('keydown', e => {
             if (gameState !== 'PLAYING') return;
-            if (e.keyCode === 37) player.pos.x--; if (collide()) player.pos.x++;
-            if (e.keyCode === 39) player.pos.x++; if (collide()) player.pos.x--;
+            if (e.keyCode === 37) { player.pos.x--; if (collide()) player.pos.x++; }
+            if (e.keyCode === 39) { player.pos.x++; if (collide()) player.pos.x--; }
             if (e.keyCode === 40) playerDrop();
             if (e.keyCode === 38) playerRotate(1);
             if (e.keyCode === 16 || e.keyCode === 67) holdPiece();
         });
-
-        // Kontrollera om sidan körs på en giltig domän (http/https) innan Service Worker registreras
-        // Detta fixar felet i Canvas/förhandsgranskningar
-        if ('serviceWorker' in navigator && (window.location.protocol === 'http:' || window.location.protocol === 'https:')) {
-            navigator.serviceWorker.register('sw.js')
-                .then(() => console.log('ServiceWorker registered'))
-                .catch(err => console.log('ServiceWorker registration failed: ', err));
-        }
 
         showStartScreen();
     </script>
