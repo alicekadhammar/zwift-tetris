@@ -3,32 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zwift-Tetris</title>
+    <title>Zwift-Tetris Pro</title>
     
-    <!-- PWA Meta Tags -->
+    <!-- PWA Settings -->
     <meta name="theme-color" content="#141923">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="manifest.json">
 
     <style>
-        /* Färgglad animerad bakgrund */
+        :root {
+            --neon-pink: #ff00cc;
+            --neon-blue: #00d2ff;
+            --bg-dark: #0d1117;
+        }
+
         body {
             margin: 0;
-            padding: 20px 0;
+            padding: 0;
             min-height: 100vh;
-            box-sizing: border-box;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #fff;
-            overflow-y: auto;
-            overflow-x: hidden;
-            background: linear-gradient(-45deg, #ff00cc, #333399, #00d2ff, #f953c6);
+            background: linear-gradient(-45deg, #2d1b4e, #1a1a2e, #16213e, #0f3460);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            color: white;
+            overflow: hidden;
         }
 
         @keyframes gradientBG {
@@ -37,60 +38,29 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Cykelanimation */
+        /* Bicycle Animation */
         .bicycle-rider {
             position: fixed;
             z-index: 1;
-            animation: rideAround 20s linear infinite;
-            filter: drop-shadow(0 0 10px rgba(255, 0, 204, 0.6));
+            animation: rideAround 25s linear infinite;
+            filter: drop-shadow(0 0 8px var(--neon-pink));
             pointer-events: none;
         }
 
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        .wheel { animation: spin 0.8s linear infinite; }
-        
-        @keyframes pedal { 
-            0% { transform: rotate(-15deg); } 
-            100% { transform: rotate(15deg); } 
-        }
-        .leg { 
-            animation: pedal 0.4s infinite alternate ease-in-out; 
-            transform-origin: 40px 38px; 
-        }
-        .leg-back { 
-            animation: pedal 0.4s infinite alternate-reverse ease-in-out; 
-            transform-origin: 40px 38px; 
-        }
-        
-        @keyframes bob {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-2px); }
-        }
-        .rider-body { 
-            animation: bob 0.4s ease-in-out infinite; 
-        }
-
         @keyframes rideAround {
-            0%     { top: 10px; left: 10px; transform: scaleX(1) rotate(0deg); }
-            24.9%  { top: 10px; left: calc(100vw - 90px); transform: scaleX(1) rotate(0deg); }
-            25%    { top: 10px; left: calc(100vw - 90px); transform: scaleX(1) rotate(90deg); }
-            49.9%  { top: calc(100vh - 90px); left: calc(100vw - 90px); transform: scaleX(1) rotate(90deg); }
-            50%    { top: calc(100vh - 90px); left: calc(100vw - 90px); transform: scaleX(-1) rotate(0deg); }
-            74.9%  { top: calc(100vh - 90px); left: 10px; transform: scaleX(-1) rotate(0deg); }
-            75%    { top: calc(100vh - 90px); left: 10px; transform: scaleX(1) rotate(-90deg); }
-            99.9%  { top: 10px; left: 10px; transform: scaleX(1) rotate(-90deg); }
-            100%   { top: 10px; left: 10px; transform: scaleX(1) rotate(0deg); }
+            0% { top: 10%; left: -100px; transform: scaleX(1); }
+            45% { top: 10%; left: 110%; transform: scaleX(1); }
+            50% { top: 80%; left: 110%; transform: scaleX(-1); }
+            95% { top: 80%; left: -100px; transform: scaleX(-1); }
+            100% { top: 10%; left: -100px; transform: scaleX(1); }
         }
 
         h1 {
-            color: #fff;
-            font-size: 3.5rem;
-            margin-bottom: 20px;
+            font-size: 2.5rem;
+            margin: 20px 0;
             text-transform: uppercase;
-            letter-spacing: 4px;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 0, 204, 0.8);
-            text-align: center;
-            position: relative;
+            letter-spacing: 5px;
+            text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-pink);
             z-index: 10;
         }
 
@@ -98,338 +68,341 @@
             display: none;
             flex-direction: column;
             align-items: center;
-            background: rgba(20, 25, 35, 0.85);
+            background: rgba(13, 17, 23, 0.9);
             backdrop-filter: blur(10px);
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.1);
-            max-width: 650px;
-            width: 95%;
-            position: relative;
+            padding: 30px;
+            border-radius: 20px;
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.3);
             z-index: 10;
+            width: 90%;
+            max-width: 500px;
         }
 
-        .screen.active {
-            display: flex;
-        }
+        .screen.active { display: flex; }
 
-        .btn {
-            background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 100%);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            margin: 10px 0;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border-radius: 50px;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: transform 0.2s, box-shadow 0.2s;
-            width: 100%;
-            max-width: 350px;
-            text-align: center;
-        }
-
-        .btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(0, 210, 255, 0.6);
-        }
-        
-        .btn.secondary {
-            background: linear-gradient(90deg, #ff00cc 0%, #333399 100%);
-        }
-
-        .game-layout {
-            display: flex;
-            flex-direction: row;
+        /* Game Board */
+        #game-container {
+            display: none;
             gap: 20px;
-            align-items: flex-start;
-            justify-content: center;
+            z-index: 10;
+            padding: 20px;
         }
 
-        .side-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 100px;
-        }
+        #game-container.active { display: flex; }
 
         canvas {
-            background-color: #0d1117;
-            border: 3px solid #3a7bd5;
-            border-radius: 8px;
-            box-shadow: 0 0 20px rgba(58, 123, 213, 0.5);
+            background: #000;
+            border: 4px solid #333;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
 
-        .mini-canvas {
-            width: 80px;
-            height: auto;
-            border: 2px solid #3a7bd5;
-            box-shadow: 0 0 10px rgba(58, 123, 213, 0.3);
-            display: block;
-            margin: 0 auto;
-        }
-
-        .info-panel {
+        .stats-panel {
             display: flex;
             flex-direction: column;
             gap: 15px;
-            width: 200px;
+            width: 150px;
         }
 
-        .panel-box {
-            background: rgba(0, 0, 0, 0.4);
+        .stat-box {
+            background: rgba(255,255,255,0.05);
             padding: 15px;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .score-box h3 {
-            margin: 0 0 5px 0;
-            font-size: 0.9rem;
-            color: #a0aec0;
-            text-transform: uppercase;
-        }
-
-        .score-box span {
-            display: block;
-            font-size: 2rem;
-            font-weight: bold;
-            color: #00d2ff;
-            text-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
-        }
-
-        .status-box {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.1);
-            width: 100%;
-            margin-bottom: 20px;
+            border-radius: 10px;
             text-align: center;
-            box-sizing: border-box;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .status-indicator {
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 8px;
-            background-color: #e53e3e;
+        .stat-label { font-size: 0.8rem; color: #888; text-transform: uppercase; }
+        .stat-value { font-size: 1.5rem; font-weight: bold; color: var(--neon-blue); }
+
+        .btn {
+            background: linear-gradient(90deg, var(--neon-blue), #3a7bd5);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.1rem;
             font-weight: bold;
-            font-size: 0.9rem;
-            transition: all 0.3s;
+            cursor: pointer;
+            margin: 10px 0;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            width: 100%;
         }
 
-        .status-indicator.connected {
-            background-color: #48bb78;
-            box-shadow: 0 0 15px rgba(72, 187, 120, 0.5);
-        }
+        .btn:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--neon-blue); }
+        .btn.pink { background: linear-gradient(90deg, var(--neon-pink), #8e2de2); }
+        .btn.orange { background: linear-gradient(90deg, #f6ad55 0%, #dd6b20 100%); }
 
-        @media (max-width: 768px) {
-            .game-layout { flex-direction: column; align-items: center; }
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            background: #ff4444;
+        }
+        .status-dot.on { background: #44ff44; box-shadow: 0 0 10px #44ff44; }
+
+        .gamepad-hint {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 10px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
-    <!-- Animaterad cyklande tjej -->
+    <!-- Animation: Cycling Girl -->
     <svg class="bicycle-rider" viewBox="0 0 100 100" width="80" height="80">
-        <g class="wheel" style="transform-origin: 25px 75px;">
-            <circle cx="25" cy="75" r="16" fill="none" stroke="#a0aec0" stroke-width="3"/>
-            <circle cx="25" cy="75" r="12" fill="none" stroke="#00d2ff" stroke-width="2" stroke-dasharray="6 6"/>
-            <circle cx="25" cy="75" r="3" fill="#ff00cc"/>
-        </g>
-        <g class="wheel" style="transform-origin: 75px 75px;">
-            <circle cx="75" cy="75" r="16" fill="none" stroke="#a0aec0" stroke-width="3"/>
-            <circle cx="75" cy="75" r="12" fill="none" stroke="#00d2ff" stroke-width="2" stroke-dasharray="6 6"/>
-            <circle cx="75" cy="75" r="3" fill="#ff00cc"/>
-        </g>
-        <path d="M25 75 L45 45 L70 45 L75 75 M45 45 L50 75 L70 45" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M42 45 L40 35 M32 35 L46 35" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
-        <path d="M70 45 L67 32 L75 32" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
-        <g class="rider-body">
-            <path d="M40 38 L52 55 L50 75" fill="none" stroke="#b8328f" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" class="leg-back"/>
-            <path d="M40 38 L52 55 L50 75" fill="none" stroke="#ff00cc" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" class="leg"/>
-            <path d="M40 38 L55 20" fill="none" stroke="#f953c6" stroke-width="8" stroke-linecap="round"/>
-            <path d="M55 20 L68 32" fill="none" stroke="#ff00cc" stroke-width="5" stroke-linecap="round"/>
-            <circle cx="60" cy="12" r="7" fill="#ffe0bd"/>
-            <path d="M53 12 A 7 7 0 0 1 67 12 Z" fill="#00d2ff"/>
-            <path d="M54 12 Q40 10 35 20" fill="none" stroke="#f6ad55" stroke-width="4" stroke-linecap="round"/>
-        </g>
+        <circle cx="25" cy="75" r="15" fill="none" stroke="#fff" stroke-width="2"/>
+        <circle cx="75" cy="75" r="15" fill="none" stroke="#fff" stroke-width="2"/>
+        <path d="M25 75 L45 45 L75 45 L75 75 M45 45 L50 75" fill="none" stroke="#fff" stroke-width="3"/>
+        <circle cx="60" cy="25" r="8" fill="#ffccaa"/>
+        <path d="M50 75 L40 35 L65 45" fill="none" stroke="#ff00cc" stroke-width="5"/>
     </svg>
 
     <h1>Zwift-Tetris</h1>
-    
+
+    <!-- START SCREEN -->
     <div id="start-screen" class="screen active">
-        <div class="status-box">
-            <h3 style="margin: 0 0 15px 0; color: #00d2ff;">Connect Equipment</h3>
-            
-            <button class="btn secondary" style="font-size: 1rem; padding: 10px 20px;" onclick="connectPowerMeter()" id="btn-power">
-                Connect Power Meter (Bluetooth)
-            </button>
-            <div id="ble-status" class="status-indicator">No power meter connected</div>
-            
-            <button class="btn secondary" style="font-size: 1rem; padding: 10px 20px; margin-top: 15px; background: linear-gradient(90deg, #f6ad55 0%, #dd6b20 100%);" onclick="connectZwiftPlayBLE()" id="btn-zwiftplay">
-                Search Zwift Play (Aggressive)
-            </button>
-            
-            <div style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
-                <span style="font-size: 0.8rem; color: #a0aec0;">Status:</span>
-                <div id="menu-gamepad-status" class="status-indicator">No gamepad connected</div>
+        <div class="stat-box" style="width: 100%; margin-bottom: 20px;">
+            <div style="margin-bottom: 10px;">
+                <span id="power-dot" class="status-dot"></span> Power Meter
+            </div>
+            <div>
+                <span id="gamepad-dot" class="status-dot"></span> Gamepad / Zwift Play
             </div>
         </div>
 
-        <button class="btn" onclick="startGame()">Play Now</button>
-        <button class="btn secondary" onclick="showLeaderboard()">Leaderboard</button>
+        <button class="btn" onclick="connectPower()">Connect Power Meter</button>
+        <button class="btn orange" onclick="connectZwiftPlayBLE()" id="btn-zwiftplay">Search Zwift Play (Aggressive)</button>
+        <button class="btn pink" onclick="startGame()">Start Game</button>
+        
+        <p class="gamepad-hint">Press any button on your controller to wake it up!</p>
+        <div style="font-size: 0.6rem; color: #444; margin-top: 20px;">v2.1.0 - English / Aggressive BLE</div>
     </div>
 
-    <div id="game-screen" class="screen" style="padding: 20px; background: rgba(20, 25, 35, 0.6);">
-        <div class="game-layout">
-            <div class="side-panel">
-                <div class="panel-box score-box">
-                    <h3>Hold</h3>
-                    <canvas id="hold-canvas" width="80" height="80" class="mini-canvas"></canvas>
-                </div>
+    <!-- GAME SCREEN -->
+    <div id="game-container">
+        <div class="stats-panel">
+            <div class="stat-box">
+                <div class="stat-label">Power</div>
+                <div id="watt-val" class="stat-value">0W</div>
             </div>
-            <canvas id="tetris" width="240" height="400"></canvas>
-            <div class="info-panel">
-                <div class="panel-box score-box">
-                    <h3>Next</h3>
-                    <canvas id="next-canvas" width="80" height="240" class="mini-canvas"></canvas>
-                </div>
-                <div class="panel-box score-box" style="border-color: #f953c6;">
-                    <h3 style="color: #f953c6;">Power</h3>
-                    <span id="watt-display" style="color: #f953c6;">0 W</span>
-                </div>
-                <div class="panel-box score-box">
-                    <h3>Score</h3>
-                    <span id="score">0</span>
-                </div>
-                <button class="btn secondary" style="font-size: 0.9rem; padding: 10px; width: 100%;" onclick="quitGame()">Quit</button>
+            <div class="stat-box">
+                <div class="stat-label">Next</div>
+                <canvas id="next-canvas" width="80" height="80"></canvas>
             </div>
         </div>
-    </div>
 
-    <div id="game-over-screen" class="screen">
-        <h2 style="font-size: 2.5rem; color: #ff00cc; margin: 0;">Game Over!</h2>
-        <p>Final Score: <strong id="final-score" style="color: #00d2ff; font-size: 2rem;">0</strong></p>
-        <input type="text" id="player-name" placeholder="Enter name" maxlength="12">
-        <button class="btn" onclick="saveScore()">Save Score</button>
-        <button class="btn secondary" onclick="showStartScreen()">Main Menu</button>
-    </div>
+        <canvas id="tetris" width="240" height="400"></canvas>
 
-    <div id="leaderboard-screen" class="screen">
-        <h2 style="color: #00d2ff; margin-top: 0;">Top Riders</h2>
-        <ol id="leaderboard-list" class="leaderboard-list"></ol>
-        <button class="btn" onclick="showStartScreen()">Back</button>
+        <div class="stats-panel">
+            <div class="stat-box">
+                <div class="stat-label">Score</div>
+                <div id="score-val" class="stat-value">0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Hold</div>
+                <canvas id="hold-canvas" width="80" height="80"></canvas>
+            </div>
+            <button class="btn pink" style="padding: 10px; font-size: 0.8rem;" onclick="location.reload()">Quit</button>
+        </div>
     </div>
 
     <script>
-        let gameState = 'START';
+        const canvas = document.getElementById('tetris');
+        const context = canvas.getContext('2d');
+        const nextCanvas = document.getElementById('next-canvas');
+        const nextCtx = nextCanvas.getContext('2d');
+        const holdCanvas = document.getElementById('hold-canvas');
+        const holdCtx = holdCanvas.getContext('2d');
+        
+        const grid = 20; 
+        context.scale(grid, grid);
+        nextCtx.scale(grid, grid);
+        holdCtx.scale(grid, grid);
+
+        const colors = [
+            null,
+            '#FF0D72', '#0DC2FF', '#0DFF72', '#F538FF', '#FF8E0D', '#FFE138', '#3877FF',
+        ];
+
+        let board = Array.from({length: 20}, () => Array(12).fill(0));
+        let player = { pos: {x: 0, y: 0}, matrix: null, score: 0 };
+        let nextPiece = null;
+        let heldPieceType = null;
+        let canHold = true;
         let currentWatts = 0;
+        let gameRunning = false;
 
-        function showScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
+        // --- GAMEPAD LOGIC (HID & BLE) ---
+        let gamepadIndex = null;
+        window.addEventListener("gamepadconnected", (e) => {
+            console.log("Gamepad connected:", e.gamepad.id);
+            gamepadIndex = e.gamepad.index;
+            document.getElementById('gamepad-dot').classList.add('on');
+        });
 
-        function showStartScreen() { gameState = 'START'; showScreen('start-screen'); }
-        function quitGame() { gameState = 'START'; showStartScreen(); }
-
-        async function connectPowerMeter() {
-            try {
-                const device = await navigator.bluetooth.requestDevice({ filters: [{ services: ['cycling_power'] }] });
-                const server = await device.gatt.connect();
-                const service = await server.getPrimaryService('cycling_power');
-                const characteristic = await service.getCharacteristic('cycling_power_measurement');
-                await characteristic.startNotifications();
-                characteristic.addEventListener('characteristicvaluechanged', (e) => {
-                    currentWatts = e.target.value.getInt16(2, true);
-                    document.getElementById('watt-display').innerText = currentWatts + " W";
-                });
-                document.getElementById('ble-status').innerText = "Connected: " + device.name;
-                document.getElementById('ble-status').classList.add('connected');
-                document.getElementById('btn-power').style.display = "none";
-            } catch (err) { alert("Power Meter Error: " + err.message); }
-        }
-
-        // --- UPPDATERAD ZWIFT PLAY LOGIK (Aggressiv sökning) ---
         async function connectZwiftPlayBLE() {
             try {
-                document.getElementById('btn-zwiftplay').innerText = "SEARCHING EVERYTHING...";
-                
-                // Vi använder acceptAllDevices för att tvinga fram allt, 
-                // då Mac ibland gömmer enheter med specifika namn-prefix.
+                document.getElementById('btn-zwiftplay').innerText = "SEARCHING...";
                 const device = await navigator.bluetooth.requestDevice({
                     acceptAllDevices: true,
                     optionalServices: [
-                        '00001801-0000-1000-8000-00805f9b34fb', // Generic Attribute
-                        '0000180f-0000-1000-8000-00805f9b34fb', // Battery
-                        '00001812-0000-1000-8000-00805f9b34fb', // HID (Viktig för spelsignaler)
+                        '00001801-0000-1000-8000-00805f9b34fb',
+                        '0000180f-0000-1000-8000-00805f9b34fb',
+                        '00001812-0000-1000-8000-00805f9b34fb', // HID Service
                     ]
                 });
-
-                document.getElementById('btn-zwiftplay').innerText = "CONNECTING...";
-                const server = await device.gatt.connect();
-                
-                document.getElementById('menu-gamepad-status').textContent = "Device Paired: " + device.name;
-                document.getElementById('menu-gamepad-status').classList.add('connected');
-                document.getElementById('btn-zwiftplay').style.display = "none";
-                
-                alert("Paired with " + device.name + "!\n\nIMPORTANT: If buttons don't work, turn off Bluetooth on your phone and RESTART the controller to break any Companion App links.");
-
-            } catch (err) { 
+                await device.gatt.connect();
+                document.getElementById('gamepad-dot').classList.add('on');
+                document.getElementById('btn-zwiftplay').innerText = "PAIRED: " + device.name;
+                alert("Paired with " + device.name + "!\nIf controls don't work, ensure no other apps are using the controller.");
+            } catch (err) {
                 console.error(err);
-                alert("Search stopped: " + err.message); 
-                document.getElementById('btn-zwiftplay').innerText = "Search Zwift Play (Aggressive)"; 
+                document.getElementById('btn-zwiftplay').innerText = "Search Failed - Try Again";
             }
         }
 
-        // --- TETRIS-LOGIK ---
-        const canvas = document.getElementById('tetris');
-        const context = canvas.getContext('2d');
-        const holdCanvas = document.getElementById('hold-canvas');
-        const holdContext = holdCanvas.getContext('2d');
-        const nextCanvas = document.getElementById('next-canvas');
-        const nextContext = nextCanvas.getContext('2d');
+        let lastInputTime = 0;
+        function handleGamepadInput() {
+            if (gamepadIndex === null) return;
+            const gp = navigator.getGamepads()[gamepadIndex];
+            if (!gp) return;
 
-        context.scale(20, 20);
-        holdContext.scale(20, 20);
-        nextContext.scale(20, 20);
+            const now = Date.now();
+            if (now - lastInputTime < 150) return;
 
-        function createPiece(type) {
-            if (type === 'T') return [[0,0,0],[1,1,1],[0,1,0]];
-            if (type === 'O') return [[2,2],[2,2]];
-            if (type === 'L') return [[0,3,0],[0,3,0],[0,3,3]];
-            if (type === 'J') return [[0,4,0],[0,4,0],[4,4,0]];
-            if (type === 'I') return [[0,5,0,0],[0,5,0,0],[0,5,0,0],[0,5,0,0]];
-            if (type === 'S') return [[0,6,6],[6,6,0],[0,0,0]];
-            if (type === 'Z') return [[7,7,0],[0,7,7],[0,0,0]];
+            // D-Pad or Joysticks
+            if (gp.axes[0] < -0.5 || gp.buttons[14]?.pressed) { movePlayer(-1); lastInputTime = now; }
+            if (gp.axes[0] > 0.5 || gp.buttons[15]?.pressed) { movePlayer(1); lastInputTime = now; }
+            
+            // Buttons A/B/X/Y or Zwift Primary
+            if (gp.buttons[0]?.pressed || gp.buttons[1]?.pressed || gp.buttons[2]?.pressed) { rotatePlayer(); lastInputTime = now; }
+            if (gp.buttons[13]?.pressed || gp.axes[1] > 0.5) { dropPlayer(); lastInputTime = now; }
+            
+            // Hold function (Bumper/Trigger)
+            if (gp.buttons[4]?.pressed || gp.buttons[5]?.pressed) { holdPieceAction(); lastInputTime = now; }
         }
 
-        const colors = [null, '#FF0D72', '#0DC2FF', '#0DFF72', '#F538FF', '#FF8E0D', '#FFE138', '#3877FF'];
-        let board = Array.from({length: 20}, () => Array(12).fill(0));
-        const player = { pos: {x:0, y:0}, matrix: null, score: 0 };
-        let nextQueue = [], heldType = null, canHold = true, currentType = null;
-        let particles = [];
+        // --- TETRIS FUNCTIONS ---
+        function createPiece(type) {
+            if (type === 'I') return [[0,1,0,0],[0,1,0,0],[0,1,0,0],[0,1,0,0]];
+            if (type === 'L') return [[0,2,0],[0,2,0],[0,2,2]];
+            if (type === 'J') return [[0,3,0],[0,3,0],[3,3,0]];
+            if (type === 'O') return [[4,4],[4,4]];
+            if (type === 'Z') return [[5,5,0],[0,5,5],[0,0,0]];
+            if (type === 'S') return [[0,6,6],[6,6,0],[0,0,0]];
+            if (type === 'T') return [[0,7,0],[7,7,7],[0,0,0]];
+        }
 
-        function playerReset() {
-            if (nextQueue.length === 0) nextQueue = Array.from({length:3}, () => 'TJLOSZI'[Math.random()*7|0]);
-            currentType = nextQueue.shift();
-            nextQueue.push('TJLOSZI'[Math.random()*7|0]);
-            player.matrix = createPiece(currentType);
-            player.pos = {y: 0, x: (board[0].length/2|0) - (player.matrix[0].length/2|0)};
-            canHold = true;
-            drawNext(); drawHold();
-            if (collide()) gameOver();
+        function draw() {
+            context.fillStyle = '#000';
+            context.fillRect(0, 0, canvas.width, canvas.height);
+
+            board.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value !== 0) drawBlock(x, y, colors[value], context);
+                });
+            });
+
+            if (player.matrix) {
+                player.matrix.forEach((row, y) => {
+                    row.forEach((value, x) => {
+                        if (value !== 0) drawBlock(x + player.pos.x, y + player.pos.y, colors[value], context);
+                    });
+                });
+            }
+        }
+
+        function drawBlock(x, y, color, ctx) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x, y, 1, 1);
+            ctx.lineWidth = 0.05;
+            ctx.strokeStyle = 'white';
+            ctx.strokeRect(x, y, 1, 1);
+        }
+
+        function drawPreview(matrix, ctx) {
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, 4, 4);
+            if (!matrix) return;
+            matrix.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value !== 0) {
+                        ctx.fillStyle = colors[value];
+                        ctx.fillRect(x, y, 1, 1);
+                        ctx.strokeRect(x, y, 1, 1);
+                    }
+                });
+            });
+        }
+
+        function movePlayer(dir) {
+            player.pos.x += dir;
+            if (collide()) player.pos.x -= dir;
+        }
+
+        function rotatePlayer() {
+            const m = player.matrix;
+            for (let y = 0; y < m.length; ++y) {
+                for (let x = 0; x < y; ++x) {
+                    [m[x][y], m[y][x]] = [m[y][x], m[x][y]];
+                }
+            }
+            m.forEach(row => row.reverse());
+            if (collide()) m.forEach(row => row.reverse());
+        }
+
+        function dropPlayer() {
+            player.pos.y++;
+            if (collide()) {
+                player.pos.y--;
+                merge();
+                resetPlayer();
+                sweepRows();
+            }
+            dropCounter = 0;
+        }
+
+        function holdPieceAction() {
+            if (!canHold) return;
+            const currentType = getPieceType(player.matrix);
+            if (heldPieceType === null) {
+                heldPieceType = currentType;
+                resetPlayer();
+            } else {
+                const temp = heldPieceType;
+                heldPieceType = currentType;
+                player.matrix = createPiece(temp);
+                player.pos.y = 0;
+                player.pos.x = (board[0].length / 2 | 0) - (player.matrix[0].length / 2 | 0);
+            }
+            canHold = false;
+            drawPreview(createPiece(heldPieceType), holdCtx);
+        }
+
+        function getPieceType(m) {
+            const sum = m.flat().reduce((a,b) => a+b, 0);
+            if (sum === 4) return 'I'; // 4*1
+            if (sum === 8) return 'L'; // 4*2
+            if (sum === 12) return 'J'; // 4*3
+            if (sum === 16) return 'O'; // 4*4
+            if (sum === 20) return 'Z'; // 4*5
+            if (sum === 24) return 'S'; // 4*6
+            if (sum === 28) return 'T'; // 4*7
+            return 'I';
         }
 
         function collide() {
             const [m, o] = [player.matrix, player.pos];
-            for (let y=0; y<m.length; ++y) {
-                for (let x=0; x<m[y].length; ++x) {
-                    if (m[y][x] !== 0 && (board[y+o.y] && board[y+o.y][x+o.x]) !== 0) return true;
+            for (let y = 0; y < m.length; ++y) {
+                for (let x = 0; x < m[y].length; ++x) {
+                    if (m[y][x] !== 0 && (board[y + o.y] && board[y + o.y][x + o.x]) !== 0) return true;
                 }
             }
             return false;
@@ -437,117 +410,97 @@
 
         function merge() {
             player.matrix.forEach((row, y) => {
-                row.forEach((val, x) => {
-                    if (val !== 0) board[y+player.pos.y][x+player.pos.x] = val;
+                row.forEach((value, x) => {
+                    if (value !== 0) board[y + player.pos.y][x + player.pos.x] = value;
                 });
             });
         }
 
-        function arenaSweep() {
-            let rowCount = 1;
-            outer: for (let y = board.length - 1; y >= 0; --y) {
-                for (let x = 0; x < board[y].length; ++x) if (board[y][x] === 0) continue outer;
-                for(let i=0; i<40; i++) particles.push({x: Math.random()*12, y: y, vx: (Math.random()-0.5)*0.8, vy: (Math.random()-0.5)*0.8, life: 1, color: `hsl(${Math.random()*360}, 100%, 60%)`});
-                board.splice(y, 1);
-                board.unshift(new Array(12).fill(0));
+        function resetPlayer() {
+            const pieces = 'ILJOTSZ';
+            if (nextPiece === null) nextPiece = pieces[pieces.length * Math.random() | 0];
+            player.matrix = createPiece(nextPiece);
+            nextPiece = pieces[pieces.length * Math.random() | 0];
+            drawPreview(createPiece(nextPiece), nextCtx);
+            
+            player.pos.y = 0;
+            player.pos.x = (board[0].length / 2 | 0) - (player.matrix[0].length / 2 | 0);
+            canHold = true;
+            if (collide()) {
+                board.forEach(row => row.fill(0));
+                player.score = 0;
+                updateScore();
+            }
+        }
+
+        function sweepRows() {
+            outer: for (let y = board.length - 1; y > 0; --y) {
+                for (let x = 0; x < board[y].length; ++x) {
+                    if (board[y][x] === 0) continue outer;
+                }
+                const row = board.splice(y, 1)[0].fill(0);
+                board.unshift(row);
                 ++y;
-                player.score += rowCount * 10;
-                rowCount *= 2;
-                document.getElementById('score').innerText = player.score;
+                player.score += 10;
+                updateScore();
             }
         }
 
-        function playerDrop() {
-            player.pos.y++;
-            if (collide()) { player.pos.y--; merge(); playerReset(); arenaSweep(); }
-            dropCounter = 0;
+        function updateScore() {
+            document.getElementById('score-val').innerText = player.score;
         }
 
-        function playerRotate(dir) {
-            const pos = player.pos.x;
-            let offset = 1;
-            const m = player.matrix;
-            for (let y=0; y<m.length; ++y) for (let x=0; x<y; ++x) [m[x][y], m[y][x]] = [m[y][x], m[x][y]];
-            if (dir > 0) m.forEach(row => row.reverse()); else m.reverse();
-            while (collide()) {
-                player.pos.x += offset;
-                offset = -(offset + (offset > 0 ? 1 : -1));
-                if (offset > m[0].length) { player.pos.x = pos; return; }
-            }
+        // --- BLUETOOTH POWER ---
+        async function connectPower() {
+            try {
+                const device = await navigator.bluetooth.requestDevice({ filters: [{ services: ['cycling_power'] }] });
+                const server = await device.gatt.connect();
+                const service = await server.getPrimaryService('cycling_power');
+                const char = await service.getCharacteristic('cycling_power_measurement');
+                await char.startNotifications();
+                char.addEventListener('characteristicvaluechanged', (e) => {
+                    currentWatts = e.target.value.getInt16(2, true);
+                    document.getElementById('watt-val').innerText = currentWatts + "W";
+                });
+                document.getElementById('power-dot').classList.add('on');
+            } catch (err) { console.log(err); }
         }
 
-        function holdPiece() {
-            if (!canHold) return;
-            if (heldType === null) { heldType = currentType; playerReset(); }
-            else { [heldType, currentType] = [currentType, heldType]; player.matrix = createPiece(currentType); player.pos.y = 0; }
-            canHold = false; drawHold(); drawNext();
-        }
+        // --- GAME LOOP ---
+        let dropCounter = 0;
+        let lastTime = 0;
 
-        function drawNext() {
-            nextContext.fillStyle = '#0d1117'; nextContext.fillRect(0,0,80,240);
-            nextQueue.forEach((t, i) => drawMini(createPiece(t), nextContext, 0.5, i*3.5+1));
-        }
-
-        function drawHold() {
-            holdContext.fillStyle = '#0d1117'; holdContext.fillRect(0,0,80,80);
-            if (heldType) drawMini(createPiece(heldType), holdContext, 0.5, 0.5);
-        }
-
-        function drawMini(m, ctx, ox, oy) {
-            m.forEach((row, y) => row.forEach((v, x) => {
-                if (v) { ctx.fillStyle = colors[v]; ctx.fillRect(x+ox, y+oy, 1, 1); ctx.strokeRect(x+ox, y+oy, 1, 1); }
-            }));
-        }
-
-        function draw() {
-            context.fillStyle = '#0d1117'; context.fillRect(0,0,240,400);
-            board.forEach((row, y) => row.forEach((v, x) => { if (v) { context.fillStyle = colors[v]; context.fillRect(x,y,1,1); context.strokeRect(x,y,1,1); } }));
-            if(player.matrix) {
-                player.matrix.forEach((row, y) => row.forEach((v, x) => { if (v) { context.fillStyle = colors[v]; context.fillRect(x+player.pos.x, y+player.pos.y, 1, 1); context.strokeRect(x+player.pos.x, y+player.pos.y, 1, 1); } }));
-            }
-            particles.forEach((p, i) => {
-                p.x += p.vx; p.y += p.vy; p.life -= 0.02;
-                if (p.life <= 0) particles.splice(i, 1);
-                else { context.globalAlpha = p.life; context.fillStyle = p.color; context.fillRect(p.x, p.y, 0.2, 0.2); }
-            });
-            context.globalAlpha = 1;
-        }
-
-        let dropCounter = 0, lastTime = 0;
         function update(time = 0) {
-            if (gameState !== 'PLAYING') return;
-            const dt = time - lastTime; lastTime = time;
-            dropCounter += dt;
-            if (dropCounter > Math.min(2500, Math.max(150, 400 + (currentWatts * 4)))) playerDrop();
+            if (!gameRunning) return;
+            const deltaTime = time - lastTime;
+            lastTime = time;
+
+            handleGamepadInput();
+
+            dropCounter += deltaTime;
+            let speed = Math.max(100, 1000 - (currentWatts * 2.5));
+            if (dropCounter > speed) dropPlayer();
+
             draw();
             requestAnimationFrame(update);
         }
 
-        function startGame() { gameState = 'PLAYING'; board.forEach(r => r.fill(0)); player.score = 0; playerReset(); showScreen('game-screen'); update(); }
-        function gameOver() { gameState = 'GAMEOVER'; document.getElementById('final-score').innerText = player.score; showScreen('game-over-screen'); }
-        function saveScore() {
-            let n = document.getElementById('player-name').value || "Rider";
-            let s = JSON.parse(localStorage.getItem('zScores')) || [];
-            s.push({n, s: player.score});
-            localStorage.setItem('zScores', JSON.stringify(s.sort((a,b)=>b.s-a.s).slice(0,10)));
-            showLeaderboard();
-        }
-        function showLeaderboard() {
-            let s = JSON.parse(localStorage.getItem('zScores')) || [];
-            document.getElementById('leaderboard-list').innerHTML = s.map(x => `<li><span>${x.n}</span><span>${x.s}</span></li>`).join('');
-            showScreen('leaderboard-screen');
+        function startGame() {
+            document.getElementById('start-screen').classList.remove('active');
+            document.getElementById('game-container').classList.add('active');
+            gameRunning = true;
+            resetPlayer();
+            update();
         }
 
         document.addEventListener('keydown', e => {
-            if (gameState !== 'PLAYING') return;
-            if (e.keyCode === 37) { player.pos.x--; if (collide()) player.pos.x++; }
-            if (e.keyCode === 39) { player.pos.x++; if (collide()) player.pos.x--; }
-            if (e.keyCode === 40) playerDrop();
-            if (e.keyCode === 38) playerRotate(1);
-            if (e.keyCode === 16 || e.keyCode === 67) holdPiece();
+            if (e.keyCode === 37) movePlayer(-1);
+            if (e.keyCode === 39) movePlayer(1);
+            if (e.keyCode === 40) dropPlayer();
+            if (e.keyCode === 38) rotatePlayer();
+            if (e.keyCode === 67) holdPieceAction(); // 'C' for hold
         });
 
-        showStartScreen();
     </script>
 </body>
 </html>
