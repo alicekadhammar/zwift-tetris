@@ -11,88 +11,55 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="manifest.json">
 
+        <!-- Add Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
     <style>
-        /* Colorful Animated Background */
+        /* RAW BRUTALIST CSS */
+        :root {
+            --bg-body: #EAEAEA;
+            --bg-box: #FFFFFF;
+            --text-dark: #0D0D0D;
+            --accent-orange: #FF3F00;
+            --accent-blue: #0022FF;
+            --border-width: 4px;
+        }
+
         body {
             margin: 0;
-            padding: 20px 0;
+            padding: 40px 0;
             min-height: 100vh;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #fff;
+            font-family: 'DM Mono', monospace;
+            background-color: var(--bg-body);
+            color: var(--text-dark);
             overflow-y: auto;
             overflow-x: hidden;
-            background: linear-gradient(-45deg, #ff00cc, #333399, #00d2ff, #f953c6);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-        }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Bicycle Animation */
-        .bicycle-rider {
-            position: fixed;
-            z-index: 1;
-            animation: rideAround 20s linear infinite;
-            filter: drop-shadow(0 0 10px rgba(255, 0, 204, 0.6));
-            pointer-events: none; /* Så man inte råkar klicka på den */
-        }
-
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        .wheel { animation: spin 0.8s linear infinite; }
-        
-        @keyframes pedal { 
-            0% { transform: rotate(-15deg); } 
-            100% { transform: rotate(15deg); } 
-        }
-        .leg { 
-            animation: pedal 0.4s infinite alternate ease-in-out; 
-            transform-origin: 40px 38px; 
-        }
-        .leg-back { 
-            animation: pedal 0.4s infinite alternate-reverse ease-in-out; 
-            transform-origin: 40px 38px; 
-        }
-        
-        @keyframes bob {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-2px); }
-        }
-        .rider-body { 
-            animation: bob 0.4s ease-in-out infinite; 
-        }
-
-        @keyframes rideAround {
-            0%     { top: 10px; left: 10px; transform: scaleX(1) rotate(0deg); }
-            24.9%  { top: 10px; left: calc(100vw - 90px); transform: scaleX(1) rotate(0deg); }
-            25%    { top: 10px; left: calc(100vw - 90px); transform: scaleX(1) rotate(90deg); }
-            49.9%  { top: calc(100vh - 90px); left: calc(100vw - 90px); transform: scaleX(1) rotate(90deg); }
-            50%    { top: calc(100vh - 90px); left: calc(100vw - 90px); transform: scaleX(-1) rotate(0deg); }
-            74.9%  { top: calc(100vh - 90px); left: 10px; transform: scaleX(-1) rotate(0deg); }
-            75%    { top: calc(100vh - 90px); left: 10px; transform: scaleX(1) rotate(-90deg); }
-            99.9%  { top: 10px; left: 10px; transform: scaleX(1) rotate(-90deg); }
-            100%   { top: 10px; left: 10px; transform: scaleX(1) rotate(0deg); }
+            background-image: radial-gradient(var(--text-dark) 1px, transparent 1px);
+            background-size: 20px 20px;
         }
 
         h1 {
-            color: #fff;
-            font-size: 5rem;
-            margin-top: auto;
-            margin-bottom: 20px;
+            color: var(--text-dark);
+            font-family: 'Anton', sans-serif;
+            font-size: 8rem;
+            margin: 0 0 40px 0;
             text-transform: uppercase;
-            letter-spacing: 4px;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 0, 204, 0.8);
+            letter-spacing: 2px;
+            text-shadow: 10px 10px 0px var(--accent-orange);
             text-align: center;
             position: relative;
             z-index: 10;
+            background: var(--bg-box);
+            padding: 0 40px;
+            border: var(--border-width) solid var(--text-dark);
+            transform: rotate(-2deg);
         }
 
         /* Screen Management */
@@ -101,13 +68,10 @@
             flex-direction: column;
             align-items: center;
             margin-bottom: auto;
-            background: rgba(10, 15, 25, 0.7);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            padding: 50px;
-            border-radius: 24px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(255,255,255,0.15);
-            border: 1px solid rgba(255,255,255,0.2);
+            background: var(--bg-box);
+            padding: 60px;
+            border: var(--border-width) solid var(--text-dark);
+            box-shadow: 20px 20px 0px var(--text-dark);
             max-width: 1200px;
             width: 95%;
             position: relative;
@@ -120,211 +84,248 @@
 
         /* Buttons */
         .btn {
-            background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 100%);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            margin: 10px 0;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border-radius: 50px;
-            cursor: pointer;
+            background: var(--bg-box);
+            color: var(--text-dark);
+            border: var(--border-width) solid var(--text-dark);
+            padding: 20px 40px;
+            margin: 15px 0;
+            font-size: 1.5rem;
+            font-family: 'Anton', sans-serif;
             text-transform: uppercase;
-            transition: transform 0.2s, box-shadow 0.2s;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.1s;
             width: 100%;
-            max-width: 300px;
+            max-width: 400px;
             text-align: center;
+            box-shadow: 8px 8px 0px var(--text-dark);
+            position: relative;
         }
 
-        .btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(0, 210, 255, 0.6);
-        }
-
-        .btn.menu-selected {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(0, 210, 255, 0.8), 0 0 10px white;
-            border: 2px solid white;
-            background: linear-gradient(90deg, #3a7bd5 0%, #00d2ff 100%);
+        .btn:hover, .btn.menu-selected {
+            background: var(--text-dark);
+            color: var(--bg-box);
+            transform: translate(4px, 4px);
+            box-shadow: 4px 4px 0px var(--accent-orange);
         }
         
         .btn.secondary {
-            background: linear-gradient(90deg, #ff00cc 0%, #333399 100%);
+            background: var(--accent-blue);
+            color: var(--bg-box);
+            border-color: var(--text-dark);
+        }
+
+        .btn.secondary:hover, .btn.secondary.menu-selected {
+            background: var(--text-dark);
+            color: var(--accent-blue);
         }
 
         /* Game Layout */
         .game-layout {
             display: flex;
             flex-direction: row;
-            gap: 20px;
+            gap: 40px;
             align-items: flex-start;
             justify-content: center;
         }
 
-        .side-panel {
+        .side-panel, .info-panel {
             display: flex;
             flex-direction: column;
             gap: 30px;
-            width: 320px;
+            width: 340px;
         }
 
         canvas {
-            background-color: rgba(13, 17, 23, 0.8);
-            backdrop-filter: blur(10px);
-            border: 3px solid rgba(58, 123, 213, 0.8);
-            border-radius: 12px;
-            box-shadow: 0 0 30px rgba(58, 123, 213, 0.6), inset 0 0 20px rgba(0,0,0,0.8);
+            background-color: var(--bg-box);
+            border: 8px solid var(--text-dark);
+            box-shadow: 20px 20px 0px var(--text-dark);
+            image-rendering: crisp-edges;
         }
 
         .mini-canvas {
-            width: 160px;
+            width: 180px;
             height: auto;
-            border: 2px solid #3a7bd5;
-            box-shadow: 0 0 10px rgba(58, 123, 213, 0.3);
+            border: var(--border-width) solid var(--text-dark);
+            box-shadow: 8px 8px 0px var(--text-dark);
             display: block;
             margin: 0 auto;
         }
 
         /* Info Panel */
-        .info-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-            width: 320px;
-        }
-
         .panel-box {
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            padding: 25px;
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.15);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4), inset 0 0 10px rgba(255,255,255,0.05);
+            background: var(--bg-box);
+            padding: 30px;
+            border: var(--border-width) solid var(--text-dark);
+            box-shadow: 10px 10px 0px var(--text-dark);
         }
 
         .score-box h3 {
-            margin: 0;
-            font-size: 1.5rem;
-            color: #a0aec0;
+            margin: 0 0 15px 0;
+            font-family: 'Anton', sans-serif;
+            font-size: 2.5rem;
+            color: var(--text-dark);
             text-transform: uppercase;
+            border-bottom: var(--border-width) solid var(--text-dark);
+            padding-bottom: 5px;
+            letter-spacing: 1px;
         }
 
         .score-box span {
             display: block;
-            font-size: 3.5rem;
-            font-weight: bold;
-            color: #00d2ff;
-            text-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
+            font-family: 'Anton', sans-serif;
+            font-size: 5rem;
+            color: var(--accent-orange);
+            line-height: 1;
         }
 
         .controls-info {
-            font-size: 1.2rem;
-            line-height: 1.6;
-            color: #cbd5e0;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-dark);
+            font-weight: 500;
         }
 
         .controls-info em {
-            color: #ff00cc;
+            color: var(--accent-blue);
             font-style: normal;
             font-weight: bold;
+            background: rgba(0, 34, 255, 0.1);
+            padding: 2px 5px;
+            border: 2px solid var(--text-dark);
+        }
+
+        .controls-info strong {
+            font-family: 'Anton', sans-serif;
+            font-size: 1.3rem;
+            letter-spacing: 1px;
+            background: var(--accent-orange);
+            color: white;
+            padding: 2px 5px;
+            border: 2px solid var(--text-dark);
+            font-weight: normal;
         }
 
         .status-box {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.2);
+            background: var(--bg-box);
+            padding: 30px;
+            border: var(--border-width) solid var(--text-dark);
+            box-shadow: 12px 12px 0px var(--text-dark);
             width: 100%;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
         .status-indicator {
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 8px;
-            background-color: #e53e3e;
+            padding: 15px;
+            margin-top: 15px;
+            border: var(--border-width) solid var(--text-dark);
+            background-color: var(--text-dark);
+            color: var(--bg-box);
             font-weight: bold;
-            font-size: 0.9rem;
-            transition: all 0.3s;
+            font-size: 1.1rem;
+            text-transform: uppercase;
         }
 
         .status-indicator.connected {
-            background-color: #48bb78;
-            box-shadow: 0 0 15px rgba(72, 187, 120, 0.5);
+            background-color: var(--accent-blue);
         }
 
         .gamepad-status {
             text-align: center;
             font-weight: bold;
-            padding: 10px;
-            border-radius: 8px;
-            background-color: #e53e3e;
-            transition: all 0.3s;
+            padding: 15px;
+            border: var(--border-width) solid var(--text-dark);
+            background-color: var(--text-dark);
+            color: var(--bg-box);
+            text-transform: uppercase;
         }
 
         .gamepad-status.connected {
-            background-color: #48bb78;
-            box-shadow: 0 0 15px rgba(72, 187, 120, 0.5);
+            background-color: var(--accent-blue);
         }
 
         /* Inputs & Lists */
         input[type="text"] {
-            padding: 15px 25px;
-            font-size: 1.8rem;
-            border-radius: 25px;
-            border: 2px solid #00d2ff;
-            background: rgba(0,0,0,0.5);
-            color: white;
-            margin-bottom: 20px;
+            padding: 20px 30px;
+            font-size: 2rem;
+            font-family: 'Anton', sans-serif;
+            border: var(--border-width) solid var(--text-dark);
+            background: var(--bg-box);
+            color: var(--text-dark);
+            margin-bottom: 30px;
             text-align: center;
             width: 80%;
             outline: none;
+            box-shadow: 10px 10px 0px var(--text-dark);
+            text-transform: uppercase;
         }
 
         input[type="text"]:focus {
-            box-shadow: 0 0 15px rgba(0, 210, 255, 0.5);
+            background: var(--accent-orange);
+            color: var(--bg-box);
         }
 
         ol.leaderboard-list {
-            list-style: none;
-            padding: 0;
+            list-style: decimal-leading-zero;
+            padding-left: 50px;
             width: 100%;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            color: var(--text-dark);
+            font-family: 'Anton', sans-serif;
+            font-size: 2.5rem;
         }
 
         ol.leaderboard-list li {
             display: flex;
             justify-content: space-between;
-            padding: 20px 25px;
-            margin-bottom: 12px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 8px;
-            font-size: 1.8rem;
-            font-weight: bold;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: var(--bg-box);
+            border: var(--border-width) solid var(--text-dark);
+            box-shadow: 8px 8px 0px var(--text-dark);
         }
         
         ol.leaderboard-list li span:first-child {
-            color: #f953c6;
+            color: var(--text-dark);
         }
         
         ol.leaderboard-list li span:last-child {
-            color: #00d2ff;
+            color: var(--accent-blue);
+        }
+
+        #power-box {
+            border: 6px solid var(--text-dark);
+            box-shadow: 15px 15px 0px var(--accent-orange);
+            background: var(--bg-box);
+        }
+
+        @keyframes strobe {
+            0%, 50% { background-color: var(--bg-box); color: var(--text-dark); }
+            51%, 100% { background-color: var(--text-dark); color: var(--bg-box); }
+        }
+
+        .power-warning-active {
+            border-color: var(--text-dark) !important;
+            box-shadow: 15px 15px 0px var(--text-dark) !important;
+            animation: strobe 0.2s steps(1) infinite !important;
+        }
+
+        .power-warning-active h3, .power-warning-active span {
+            color: inherit !important;
+            border-color: inherit !important;
+            text-shadow: none !important;
         }
 
         @media (max-width: 768px) {
+            h1 { font-size: 4rem; transform: none; padding: 20px; }
             .game-layout {
                 flex-direction: column;
                 align-items: center;
             }
             .side-panel, .info-panel {
                 width: 100%;
-                max-width: 240px;
-                flex-direction: row;
-                justify-content: center;
-                flex-wrap: wrap;
+                max-width: 340px;
             }
         }
     </style>
@@ -332,7 +333,7 @@
 <body>
 
     <!-- Animaterad Cyklande Tjej (SVG) -->
-    <svg class="bicycle-rider" viewBox="0 0 100 100" width="80" height="80">
+    <svg class="bicycle-rider" style="display:none;"  viewBox="0 0 100 100" width="80" height="80">
         <!-- Fram och bakhjul -->
         <g class="wheel" style="transform-origin: 25px 75px;">
             <circle cx="25" cy="75" r="16" fill="none" stroke="#a0aec0" stroke-width="3"/>
@@ -377,7 +378,7 @@
     <div id="start-screen" class="screen active">
         
         <div class="status-box">
-            <h3 style="margin-top: 0; color: #00d2ff;">Connect Equipment</h3>
+            <h3 style="margin-top: 0; ">Connect Equipment</h3>
             
             <button class="btn secondary" style="font-size: 1rem; padding: 10px 20px;" onclick="connectPowerMeter()" id="btn-power">
                 Connect Power Meter (Bluetooth)
@@ -398,7 +399,7 @@
     </div>
 
     <!-- GAME SCREEN -->
-    <div id="game-screen" class="screen" style="padding: 30px; background: rgba(10, 15, 25, 0.5);">
+    <div id="game-screen" class="screen" style="">
         <div class="game-layout">
             
             <div class="side-panel">
@@ -434,37 +435,24 @@
                     <canvas id="next-canvas" width="160" height="480" class="mini-canvas"></canvas>
                 </div>
 
-                <div class="panel-box score-box" id="power-box" style="border-color: #f953c6; box-shadow: 0 0 10px rgba(249, 83, 198, 0.3); transition: all 0.3s;">
-                    <h3 style="color: #f953c6;">Power</h3>
-                    <span id="watt-display" style="color: #f953c6;">0 W</span>
-                    <div id="power-warning" style="display: none; color: #ff00cc; font-weight: bold; font-size: 0.8rem; margin-top: 5px; animation: blink 1s infinite;">⚠️ PEDAL FASTER! ⚠️</div>
+                <div class="panel-box score-box" id="power-box">
+                    <h3>Power</h3>
+                    <span id="watt-display">0 W</span>
+                    <div id="power-warning" style="display: none; color: var(--accent-orange); font-family: 'Anton', sans-serif; font-size: 1.5rem; margin-top: 10px;">PEDAL FASTER.</div>
                 </div>
 
                 <div class="panel-box score-box">
                     <h3>Score</h3>
                     <span id="score">0</span>
                 </div>
-                
-                <style>
-                    @keyframes blink {
-                        0% { opacity: 1; }
-                        50% { opacity: 0; }
-                        100% { opacity: 1; }
-                    }
-                    .power-warning-active {
-                        border-color: #ff00cc !important;
-                        box-shadow: 0 0 20px rgba(255, 0, 204, 0.8) !important;
-                        background: rgba(255, 0, 204, 0.1) !important;
-                    }
-                </style>
             </div>
         </div>
     </div>
 
     <!-- GAME OVER SCREEN -->
     <div id="game-over-screen" class="screen">
-        <h2 style="font-size: 2.5rem; color: #ff00cc; margin-top: 0;">Game Over!</h2>
-        <p style="font-size: 1.2rem; margin-bottom: 30px;">Final Score: <strong id="final-score" style="color: #00d2ff; font-size: 2rem;">0</strong></p>
+        <h2 style="font-size: 4rem; font-family: 'Anton'; margin-top: 0; text-transform: uppercase;">Game Over!</h2>
+        <p style="font-size: 1.2rem; margin-bottom: 30px;">Final Score: <strong id="final-score" style=" font-size: 2rem;">0</strong></p>
         
         <input type="text" id="player-name" placeholder="Enter your name" maxlength="15" autocomplete="off">
         
@@ -474,7 +462,7 @@
 
     <!-- LEADERBOARD SCREEN -->
     <div id="leaderboard-screen" class="screen">
-        <h2 style="font-size: 2rem; color: #00d2ff; margin-top: 0;">Top Riders</h2>
+        <h2 style="font-size: 2rem;  margin-top: 0;">Top Riders</h2>
         
         <ol id="leaderboard-list" class="leaderboard-list">
             <!-- Filled via JS -->
@@ -592,7 +580,7 @@
             let scores = JSON.parse(localStorage.getItem('zwiftTrisScores')) || [];
             
             if (scores.length === 0) {
-                list.innerHTML = `<li style="justify-content: center; color: #a0aec0;">No scores yet. Be the first!</li>`;
+                list.innerHTML = `<li style="justify-content: center; ">No scores yet. Be the first!</li>`;
             } else {
                 list.innerHTML = scores.map(s => `<li><span>${s.name}</span> <span>${s.score}</span></li>`).join('');
             }
@@ -929,7 +917,7 @@
 
         const colors = [
             null,
-            '#FF0D72', '#0DC2FF', '#0DFF72', '#F538FF', '#FF8E0D', '#FFE138', '#3877FF'
+            '#FF3F00', '#0022FF', '#FF3F00', '#000000', '#FFFFFF', '#0022FF', '#000000'
         ];
 
         let board = createMatrix(12, 20);
@@ -957,16 +945,15 @@
             const yOffset = yStart; // row index in grid
             const color = colors[colorCode] || '#fff';
             
-            // Spawn 40 particles across the row
             for(let i = 0; i < 40; i++) {
                 particles.push({
-                    x: Math.random() * 12,        // Grid X (0 to 12)
-                    y: yOffset + Math.random(),   // Grid Y
-                    vx: (Math.random() - 0.5) * 0.8, // X velocity
-                    vy: (Math.random() - 0.5) * 0.8, // Y velocity
-                    life: 1.0,                    // Full life
-                    decay: 0.02 + Math.random() * 0.03, // Fade speed
-                    color: `hsl(${Math.random() * 360}, 100%, 60%)` // Rainbow explosion!
+                    x: Math.random() * 12,        
+                    y: yOffset + Math.random(),   
+                    vx: (Math.random() - 0.5) * 0.8, 
+                    vy: (Math.random() - 0.5) * 0.8, 
+                    life: 1.0,                    
+                    decay: 0.02 + Math.random() * 0.03, 
+                    color: color 
                 });
             }
         }
@@ -996,38 +983,18 @@
             matrix.forEach((row, y) => {
                 row.forEach((value, x) => {
                     if (value !== 0) {
-                        // Base color
                         ctx.fillStyle = colors[value];
                         ctx.fillRect(x + offsetX, y + offsetY, 1, 1);
-                        
-                        // Glossy top edge
-                        ctx.fillStyle = 'rgba(255,255,255,0.4)';
-                        ctx.fillRect(x + offsetX, y + offsetY, 1, 0.15);
-                        
-                        // Glossy left edge
-                        ctx.fillStyle = 'rgba(255,255,255,0.2)';
-                        ctx.fillRect(x + offsetX, y + offsetY, 0.15, 1);
-                        
-                        // Dark bottom edge
-                        ctx.fillStyle = 'rgba(0,0,0,0.4)';
-                        ctx.fillRect(x + offsetX, y + offsetY + 0.85, 1, 0.15);
-                        
-                        // Dark right edge
-                        ctx.fillStyle = 'rgba(0,0,0,0.2)';
-                        ctx.fillRect(x + offsetX + 0.85, y + offsetY, 0.15, 1);
-
-                        // Inner glow/gradient simulated by a slightly smaller rect
-                        ctx.fillStyle = colors[value];
-                        ctx.globalAlpha = 0.5;
-                        ctx.fillRect(x + offsetX + 0.1, y + offsetY + 0.1, 0.8, 0.8);
-                        ctx.globalAlpha = 1.0;
+                        ctx.strokeStyle = '#0D0D0D';
+                        ctx.lineWidth = 0.1;
+                        ctx.strokeRect(x + offsetX, y + offsetY, 1, 1);
                     }
                 });
             });
         }
 
         function drawNext() {
-            nextContext.fillStyle = '#0d1117';
+            nextContext.fillStyle = '#FFFFFF';
             nextContext.fillRect(0, 0, nextCanvas.width, nextCanvas.height);
             nextPiecesQueue.forEach((type, index) => {
                 const matrix = createPiece(type);
@@ -1038,7 +1005,7 @@
         }
 
         function drawHold() {
-            holdContext.fillStyle = '#0d1117';
+            holdContext.fillStyle = '#FFFFFF';
             holdContext.fillRect(0, 0, holdCanvas.width, holdCanvas.height);
             if (heldPieceType) {
                 const matrix = createPiece(heldPieceType);
@@ -1052,42 +1019,22 @@
             matrix.forEach((row, y) => {
                 row.forEach((value, x) => {
                     if (value !== 0) {
-                        // Base color
                         context.fillStyle = colors[value];
                         context.fillRect(x + offset.x, y + offset.y, 1, 1);
-                        
-                        // Glossy top edge
-                        context.fillStyle = 'rgba(255,255,255,0.4)';
-                        context.fillRect(x + offset.x, y + offset.y, 1, 0.15);
-                        
-                        // Glossy left edge
-                        context.fillStyle = 'rgba(255,255,255,0.2)';
-                        context.fillRect(x + offset.x, y + offset.y, 0.15, 1);
-                        
-                        // Dark bottom edge
-                        context.fillStyle = 'rgba(0,0,0,0.4)';
-                        context.fillRect(x + offset.x, y + offset.y + 0.85, 1, 0.15);
-                        
-                        // Dark right edge
-                        context.fillStyle = 'rgba(0,0,0,0.2)';
-                        context.fillRect(x + offset.x + 0.85, y + offset.y, 0.15, 1);
-
-                        // Inner glow/gradient simulated by a slightly smaller rect
-                        context.fillStyle = colors[value];
-                        context.globalAlpha = 0.5;
-                        context.fillRect(x + offset.x + 0.1, y + offset.y + 0.1, 0.8, 0.8);
-                        context.globalAlpha = 1.0;
+                        context.strokeStyle = '#0D0D0D';
+                        context.lineWidth = 0.08;
+                        context.strokeRect(x + offset.x, y + offset.y, 1, 1);
                     }
                 });
             });
         }
 
         function draw() {
-            context.fillStyle = '#0d1117';
+            context.fillStyle = '#FFFFFF';
             context.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Draw Background Grid
-            context.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+            // Brutalist Grid
+            context.strokeStyle = '#EAEAEA';
             context.lineWidth = 0.05;
             for(let x = 0; x <= 12; x++) {
                 context.beginPath();
@@ -1112,7 +1059,7 @@
             for (let i = floatingTexts.length - 1; i >= 0; i--) {
                 let text = floatingTexts[i];
                 context.save();
-                context.font = "bold 1.5px 'Segoe UI', sans-serif";
+                context.font = "1.5px 'Anton', sans-serif";
                 context.textAlign = "center";
                 
                 // Outline
@@ -1216,16 +1163,16 @@
                 
                 if (linesCleared === 1) {
                     message = "SINGLE";
-                    color = "rgb(0, 210, 255)"; // cyan
+                    color = "rgb(0, 34, 255)"; // cyan
                 } else if (linesCleared === 2) {
                     message = "DOUBLE";
-                    color = "rgb(249, 83, 198)"; // pink
+                    color = "rgb(255, 63, 0)"; // pink
                 } else if (linesCleared === 3) {
                     message = "TRIPLE";
-                    color = "rgb(255, 142, 13)"; // orange
+                    color = "rgb(0, 168, 89)"; // orange
                 } else if (linesCleared >= 4) {
                     message = "TETRIS!";
-                    color = "rgb(255, 13, 114)"; // red/magenta
+                    color = "rgb(13, 13, 13)"; // red/magenta
                 }
 
                 floatingTexts.push({
